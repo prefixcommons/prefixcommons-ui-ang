@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prefixcommons</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+    <script src="http://code.angularjs.org/1.2.16/angular.js"></script>
+    <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elasticsearch.angular.js"></script>
+    <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elastic.js"></script>
+    <script src="http://rawgit.com/YousefED/ElasticUI/master/dist/elasticui.min.js"></script>
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: block;
+            padding: 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: #f5f5f5;
+            border-right: 0px solid #eee;
+        }
+		.bannerinput {
+			width: 300px;
+		}
+    </style>
+	
+    <script>
+        angular
+            .module('prefixcommons', ['elasticui'])
+            .constant('euiHost', 'http://localhost:9200')
+			.controller('michel', ['$scope', function($scope) {
+				$scope.searchfield = '_all';
+				$scope.searchfieldValue = false;
+				$scope.setSearchField = function() {
+					if($scope.searchfieldValue == false) {
+						$scope.searchfield = "preferredPrefix";
+					} else {
+						$scope.searchfield = "_all";
+					}
+					console.log($scope.searchfield);				
+				};
+			}]);
+  </script>
+	
+</head>
+<body ng-app="prefixcommons" eui-index="'prefixcommons'">
+
+    <div class="container-fluid" ng-controller="michel">
+        <div class="row">
+            <div class="col-xs-3 sidebar">
+                <h3>Keywords</h3>
+                <eui-singleselect field="'keywords'" size="10"></eui-singleselect>
+                <h3>organization</h3>
+                <eui-singleselect field="'organization'" size="10"></eui-singleselect>                
+            </div>
+            <div class="col-xs-9 col-xs-offset-3">
+                <div style="height: 200px; text-align: center;  padding-top: 30px;">
+					<h1>Prefixcommons</h1>
+					<br>
+					<span style="">
+					<!--<eui-searchbox style="border-width:5px" field="'_all'"></eui-searchbox> -->
+					<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MatchQuery(searchfield, querystring).operator('AND')" ng-model="querystring" eui-enabled="querystring.length" type="text">
+					
+					<input label="Search" type="submit" value="search"/><br>
+					<input type="checkbox" ng-model="searchfieldValue" ng-click="setSearchField()"/> search only prefixes
+					</span>
+					
+					
+				</div>
+				<div> 
+					<span><strong>{{indexVM.results.hits.total}}</strong> results</span>
+					<table>
+					  <tr style="border-spacing:5em" ng-repeat="(i,doc) in indexVM.results.hits.hits">
+						<td ng-if="$odd" style="background-color:#f1f1f1; vertical-align: text-top;">{{i+1}}.</td>
+						<td ng-if="$even" style="vertical-align: text-top;">{{i+1}}.</td>
+						<td ng-if="$odd" style="background-color:#f1f1f1;">
+						 <div style="font-weight: bold;">{{doc._source.title}} [prefix: {{doc._source.preferredPrefix}}]</div>
+						   {{doc._source.description}}<br><br>
+						</td>
+						<td ng-if="$even">
+						  <div style="font-weight: bold;">{{doc._source.title}} [prefix: {{doc._source.preferredPrefix}}]</div>
+						   {{doc._source.description}}<br><br>
+						</td>
+					  </tr>
+					</table>
+					<eui-simple-paging></eui-simple-paging>
+					<div style="margin: auto;">results per page <select ng-model="indexVM.pageSize"><option ng-repeat="item in [10, 20, 50, 100]">{{item}}</option></select></div>
+				</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
