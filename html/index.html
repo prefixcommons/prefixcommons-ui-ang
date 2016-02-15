@@ -10,43 +10,57 @@
     <style>
         .sidebar {
             position: fixed;
-            top: 0;
-            bottom: 0;
+            top: 20px;
+            bottom: 0px;
             z-index: 1000;
             display: block;
             padding: 20px;
             overflow-x: hidden;
             overflow-y: auto;
-            background-color: #f5f5f5;
+            /* background-color: #f5f5f5; */
             border-right: 0px solid #eee;
         }
 		.bannerinput {
 			width: 300px;
 		}
+		.details {
+			max-height: 100px;
+			transition: .8s;
+			overflow: hidden;
+		}
+		
+		.detailsItem {
+			display: block;
+		}
+
     </style>
 	
     <script>
         angular
             .module('prefixcommons', ['elasticui'])
             .constant('euiHost', 'http://localhost:9200')
-			.controller('michel', ['$scope', function($scope) {
+			.controller('view', ['$scope', function ($scope) {
+			
+			 }])
+			.controller('search', ['$scope', function($scope) {
+				// toggle between prefix and all searching
 				$scope.searchfield = '_all';
-				$scope.searchfieldValue = false;
+				$scope.searchfieldValue = false;				
 				$scope.setSearchField = function() {
 					if($scope.searchfieldValue == false) {
 						$scope.searchfield = "preferredPrefix";
 					} else {
 						$scope.searchfield = "_all";
 					}
-					console.log($scope.searchfield);				
 				};
+				
 			}]);
   </script>
 	
 </head>
 <body ng-app="prefixcommons" eui-index="'prefixcommons'">
 
-    <div class="container-fluid" ng-controller="michel">
+    <div class="container-fluid" ng-controller="search">
         <div class="row">
             <div class="col-xs-3 sidebar">
                 <h3>Keywords</h3>
@@ -56,17 +70,14 @@
             </div>
             <div class="col-xs-9 col-xs-offset-3">
                 <div style="height: 200px; text-align: center;  padding-top: 30px;">
-					<h1>Prefixcommons</h1>
+					<h1>prefixcommons.org</h1>
 					<br>
 					<span style="">
-					<!--<eui-searchbox style="border-width:5px" field="'_all'"></eui-searchbox> -->
-					<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MatchQuery(searchfield, querystring).operator('AND')" ng-model="querystring" eui-enabled="querystring.length" type="text">
+						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MatchQuery(searchfield, querystring).operator('AND')" ng-model="querystring" eui-enabled="querystring.length" type="text">
 					
-					<input label="Search" type="submit" value="search"/><br>
-					<input type="checkbox" ng-model="searchfieldValue" ng-click="setSearchField()"/> search only prefixes
+						<input label="Search" type="submit" value="search"/><br>
+						<input type="checkbox" ng-model="searchfieldValue" ng-click="setSearchField()"/> search only prefixes
 					</span>
-					
-					
 				</div>
 				<div> 
 					<span><strong>{{indexVM.results.hits.total}}</strong> results</span>
@@ -76,11 +87,64 @@
 						<td ng-if="$even" style="vertical-align: text-top;">{{i+1}}.</td>
 						<td ng-if="$odd" style="background-color:#f1f1f1;">
 						 <div style="font-weight: bold;">{{doc._source.title}} [prefix: {{doc._source.preferredPrefix}}]</div>
-						   {{doc._source.description}}<br><br>
+						    <div>{{doc._source.description}}</div>
+						   
+						   
+	
+						   <br>
 						</td>
 						<td ng-if="$even">
 						  <div style="font-weight: bold;">{{doc._source.title}} [prefix: {{doc._source.preferredPrefix}}]</div>
-						   {{doc._source.description}}<br><br>
+						   {{doc._source.description}}</div>
+						   
+						   	<div><a href='#{{i}}' ng-click='showDetails =! showDetails'>details</a></div>
+							<div ng-show="showDetails">
+								<br>
+								<span ng-if="doc._source.organization != ''">
+									organization: {{doc._source.organization}}
+								</span>
+								<span ng-if="doc._source.homepage != ''">
+									[<a href="{{doc._source.homepage}}">website</a>]
+									<br>
+								</span>
+								<span ng-if="doc._source.keywords != ''">
+									<span ng-repeat="keyword in doc._source.keywords">
+										{{$first ? 'keywords: ' : ''}}{{keyword}}{{$last ? '' : ', '}}
+									</span>
+									<br>
+								</span>
+								<span ng-if="doc._source.alternativePrefix != ''">
+									<span ng-repeat="alternativePrefix in doc._source.alternativePrefix">
+										{{$first ? 'alternative prefixes: ' : ''}}{{alternativePrefix}}{{$last ? '' : ', '}}
+									</span>
+									<br>
+								</span>
+								<span ng-if="doc._source.preferredBaseURI != ''">
+									<span ng-repeat="preferredBaseURI in doc._source.preferredBaseURI">
+										{{$first ? 'preferred Base URI: ' : ''}}{{preferredBaseURI}}{{$last ? '' : ', '}}
+									</span>
+									<br>
+								</span>
+								<span ng-if="doc._source.alternativeBaseURI != ''">
+									<span ng-repeat="alternativeBaseURI in doc._source.alternativeBaseURI">
+										{{$first ? 'alternative base URI: ' : ''}}{{alternativeBaseURI}}{{$last ? '' : ', '}}
+									</span>
+									<br>
+								</span>								
+								<span ng-if="doc._source.idRegex != '' and doc._source.idRegex.length > 1">
+									idRegex: {{doc._source.idRegex}}
+									<br>
+								</span>   
+								<span ng-if="doc._source.exampleID != '' and doc._source.exampleID.length > 1 ">
+									exampleID: {{doc._source.exampleID}}
+									<br>
+								</span>  
+								<span ng-if="doc._source.providerHtmlTemplate != '' and doc._source.providerHtmlTemplate != 'N/A'">	
+									providerHtmlTemplate: {{doc._source.providerHtmlTemplate}}
+									<br/>
+								</span>
+								
+							</div>
 						</td>
 					  </tr>
 					</table>
