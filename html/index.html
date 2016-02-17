@@ -11,7 +11,7 @@
     <style>
         .sidebar {
             position: fixed;
-            top: 20px;
+            top: 0px;
             bottom: 0px;
 			left: 20px;
             z-index: 1000;
@@ -59,16 +59,16 @@
     <div class="container-fluid" ng-controller="search">
         <div class="row">
             <div class="col-xs-3 sidebar">
-			 <div style="height: 150px; text-align: center;  padding-top: 0px;"></div>
+			 <div style="height: 100px; text-align: center;  padding-top: 0px;"></div>
                 <h3>Type</h3>
                 <eui-singleselect field="'type'" size="10"></eui-singleselect>
                 <h3>Keywords</h3>
-                <eui-singleselect field="'keywords'" size="10"></eui-singleselect>
+                <eui-singleselect field="'keywords'" size="8"></eui-singleselect>
                 <h3>organization</h3>
-                <eui-singleselect field="'organization'" size="10"></eui-singleselect>                
+                <eui-singleselect field="'organization'" size="8"></eui-singleselect>                
             </div>
-            <div class="col-xs-7 col-xs-offset-3">
-                <div style="height: 200px; text-align: center;  padding-top: 30px;">
+            <div class="col-xs-8 col-xs-offset-4">
+                <div style="left: 20px; height: 200px; text-align: center;  padding-top: 30px;">
 					<h1><img height="40" src="img/prefixcommons.png"/>prefixcommons.org</h1>
 					<br>
 					<span style="">
@@ -79,7 +79,7 @@
 					</span>
 				</div>
 				<div> 
-					<span><strong>{{indexVM.results.hits.total}}</strong> results</span>
+					<span><strong>{{indexVM.results.hits.total}}</strong> {{indexVM.results.hits.total == 1 ? 'result':'results'}}</span>
 					<table>
 					  <tr style="border-spacing:5em" ng-repeat="(i,doc) in indexVM.results.hits.hits">
 						<td style="{{$odd ? 'background-color:#f1f1f1; vertical-align: text-top;' : 'vertical-align: text-top;'}}">
@@ -107,7 +107,14 @@
 									</span>
 									<br>
 								</span>
-							
+								<span ng-if="doc._source.pubmed != '' && doc._source.pubmed.length > 0">
+									<strong>pubmed:</strong> 
+									<span ng-repeat="pubmed in doc._source.pubmed">
+										<a href="http://www.ncbi.nlm.nih.gov/pubmed/{{pubmed}}">{{pubmed}}</a>{{$last ? '' : ', '}}
+									</span>
+									<br>
+								</span>
+								
 								<span ng-if="doc._source.alternativePrefix != '' && doc._source.alternativePrefix.length > 0">
 									<strong>alternative prefixes:</strong> 
 									<span ng-repeat="alternativePrefix in doc._source.alternativePrefix">
@@ -140,12 +147,16 @@
 									<strong>providerHtmlTemplate:</strong> {{doc._source.providerHtmlTemplate}}
 									<br/>
 								</span>
-								<span ng-if="doc._source.pubmed != '' && doc._source.pubmed.length > 0">
-									<strong>pubmed:</strong> 
-									<span ng-repeat="pubmed in doc._source.pubmed">
-										<a href="http://www.ncbi.nlm.nih.gov/pubmed/{{pubmed}}">{{pubmed}}</a>{{$last ? '' : ', '}}
-									</span>
-									<br>
+
+
+								<span ng-if="doc._source.exampleID != '' && doc._source.exampleID.length > 0 
+										&& doc._source.providerHtmlTemplate != '' 
+										&& doc._source.providerHtmlTemplate != 'N/A'
+										&& doc._source.providerHtmlTemplate.length > 0
+								">	
+									<strong>Provider Example HTML:</strong> 
+									<a ng-href="{{doc._source.providerHtmlTemplate.replace('$id',doc._source.exampleID)}}">html</a>
+									<br/>
 								</span>
 								<span ng-if="doc._source.exampleID != '' && doc._source.exampleID.length > 0 ">	
 									<strong>Bio2RDF:</strong> <a href="http://bio2rdf.org/{{doc._source.preferredPrefix}}:{{doc._source.exampleID}}">http://bio2rdf.org/{{doc._source.preferredPrefix}}:{{doc._source.exampleID}}</a>
@@ -157,10 +168,14 @@
 					  </tr>
 					</table>
 					<eui-simple-paging></eui-simple-paging>
-					<div style="margin: auto;">results per page <select ng-model="indexVM.pageSize"><option ng-repeat="item in [10, 20, 50, 100]">{{item}}</option></select></div>
+					<div style="margin: auto;">results per page 
+						<select ng-model="indexVM.pageSize">
+							<option ng-repeat="item in [10, 20, 50, 100]">{{item}}</option>
+						</select>
+					</div>
 				</div>
             </div>
-			<div class="col-xs-2"></div>
+			<div class="col-xs-1"></div>
 			
         </div>
     </div>
