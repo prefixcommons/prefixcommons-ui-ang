@@ -43,7 +43,7 @@
 	}
   },
   "settings": {
-	"number_of_shards" : 1,
+	"number_of_shards" : 3,
 	"number_of_replicas": 0,
 	"analysis": {
 		"filter": {
@@ -54,7 +54,7 @@
 			},
 		    "nGram_filter": {
                "type": "nGram",
-               "min_gram": 2,
+               "min_gram": 1,
                "max_gram": 20,
                "token_chars": [
                   "letter",
