@@ -3,12 +3,20 @@
 <head>
     <title>prefixcommons.org</title>
 	<link rel="shortcut icon" href="img/prefixcommons.ico" type="image/x-icon" /> 
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+<!-- local
+    <script src="js/angular.js"></script>
+    <script src="js/elasticsearch.angular.js"></script>
+    <script src="js/elastic.js"></script>
+    <script src="js/elasticui.min.js"></script>
+-->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
     <script src="http://code.angularjs.org/1.2.16/angular.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elasticsearch.angular.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elastic.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/dist/elasticui.min.js"></script>
-    <style>
+	
+	<style>
         .sidebar {
             position: fixed;
             top: 0px;
@@ -76,9 +84,9 @@
                 <h3>organization</h3>
                 <eui-singleselect field="'organization'" size="8"></eui-singleselect>                
             </div>
-            <div class="col-xs-8 col-xs-offset-4">
-                <div style="left: 20px; height: 200px; text-align: center;  padding-top: 30px;">
-					<h1><img height="40" src="img/prefixcommons.png"/>prefixcommons.org</h1>
+            <div class="col-xs-8 col-xs-offset-3">
+                <div style="left: 10px; height: 200px; text-align: center;  padding-top: 30px;">
+					<h1><img height="40" src="img/prefixcommons.png"/>prefixcommons</h1>
 					<br>
 					<span style="">
 						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MatchQuery(searchfield, querystring).operator('AND')" ng-model="querystring" eui-enabled="querystring.length" type="text">
@@ -171,6 +179,18 @@
 									<strong>Bio2RDF:</strong> <a href="http://bio2rdf.org/{{doc._source.preferredPrefix}}:{{doc._source.exampleID}}">http://bio2rdf.org/{{doc._source.preferredPrefix}}:{{doc._source.exampleID}}</a>
 									<br/>
 								</span>
+								<span ng-if="doc._source.miriam != '' && doc._source.miriam.length > 0 ">	
+									<strong>MIRIAM:</strong> <a href="http://www.ebi.ac.uk/miriam/main/collections/{{doc._source.miriam}}">http://www.ebi.ac.uk/miriam/main/collections/{{doc._source.miriam}}</a>
+									<br/>
+								</span>
+								<span ng-if="doc._source.biosharing != '' && doc._source.biosharing.length > 0 ">	
+									<strong>BioSharing:</strong> <a href="https://biosharing.org/{{doc._source.biosharing}}">https://biosharing.org/{{doc._source.biosharing}}</a>
+									<br/>
+								</span>								
+								<span ng-if="doc._source.bioportal != '' && doc._source.bioportal.length > 0 ">	
+									<strong>Bioportal:</strong> <a href="https://bioportal.bioontology.org/{{doc._source.bioportal}}">https://bioportal.bioontology.org/{{doc._source.bioportal}}</a>
+									<br/>
+								</span>	
 								<br/>
 							</div>
 						</td>
