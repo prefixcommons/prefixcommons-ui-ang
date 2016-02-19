@@ -25,7 +25,7 @@
         "preferredBaseURI": { "type": "string", "index":"not_analyzed" },
 		"alternativeBaseURI": { "type": "string", "index":"not_analyzed" },
 		"miriam": { "type": "string", "index":"not_analyzed" },
-		"biodbcore": { "type": "string", "index":"not_analyzed" },
+		"biosharing": { "type": "string", "index":"not_analyzed" },
 		"thedatahub": { "type": "string", "index":"not_analyzed" },
 		"abbreviation": { "type": "string", "index":"not_analyzed" },
 		"title": { "type": "string" },
