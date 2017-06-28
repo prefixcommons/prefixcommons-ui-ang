@@ -57,15 +57,7 @@
 			
 			 }])
 			.controller('search', ['$scope', function($scope) {
-				// toggle between prefix and all searching
-				$scope.searchfield = '_all';
-				$scope.searchfieldValue = false;				
-				$scope.setSearchField = function() {
-					if($scope.searchfieldValue == false) {
-						$scope.searchfield = "preferredPrefix";
-					} else {
-						$scope.searchfield = "_all";
-					}
+
 				};				
 			}]);
   </script>
@@ -89,10 +81,9 @@
 					<h1><img height="40" src="img/prefixcommons.png"/>prefixcommons</h1>
 					<br>
 					<span style="">
-						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MatchQuery(searchfield, querystring).operator('AND')" ng-model="querystring" eui-enabled="querystring.length" type="text">
+						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" type="text">
 					
 						<input label="Search" type="submit" value="search"/><br>
-						<input type="checkbox" ng-model="searchfieldValue" ng-click="setSearchField()"/> search only prefixes
 					</span>
 				</div>
 				<div> 
