@@ -52,7 +52,7 @@
     <script>
         angular
             .module('prefixcommons', ['elasticui'])
-            .constant('euiHost', 'http://localhost:9200')
+            .constant('euiHost', 'http://search.prefixcommons.org')
 			.controller('view', ['$scope', function ($scope) {
 			
 			 }])
@@ -80,9 +80,7 @@
 					<h1><img height="40" src="img/prefixcommons.png"/>prefixcommons</h1>
 					<br>
 					<span style="">
-						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" type="text">
-					
-						<input label="Search" type="submit" value="search"/><br>
+						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" type="text" placeholder="enter search terms">
 					</span>
 				</div>
 				<div> 
