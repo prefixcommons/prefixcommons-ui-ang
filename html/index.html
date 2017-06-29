@@ -53,16 +53,16 @@
         angular
             .module('prefixcommons', ['elasticui'])
             .constant('euiHost', 'http://search.prefixcommons.org')
-			.controller('view', ['$scope', function ($scope) {
-			
-			 }])
+			.controller('q', ['$scope', '$location', function ($scope, $location) {
+				$scope.querystring = $location.search().q;
+			 }])			 
 			.controller('search', ['$scope', function($scope) {
-			
+
 			}]);
   </script>
 	
 </head>
-<body ng-app="prefixcommons" eui-index="'prefixcommons'">
+<body ng-app="prefixcommons" eui-index="'prefixcommons'" ng-controller="main">
 
     <div class="container-fluid" ng-controller="search">
         <div class="row">
@@ -80,7 +80,7 @@
 					<h1><img height="40" src="img/prefixcommons.png"/>prefixcommons</h1>
 					<br>
 					<span style="">
-						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" type="text" placeholder="enter search terms">
+						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all^1']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" ng-controller="q" type="text" placeholder="enter search terms">
 					</span>
 				</div>
 				<div> 
