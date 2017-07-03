@@ -2,14 +2,7 @@
 <html>
 <head>
     <title>prefixcommons.org</title>
-	<link rel="shortcut icon" href="img/prefixcommons.ico" type="image/x-icon" /> 
-<!-- local
-    <link rel="stylesheet" href="css/bootstrap.min.css" /> 
-    <script src="js/angular.js"></script>
-    <script src="js/elasticsearch.angular.js"></script>
-    <script src="js/elastic.js"></script>
-    <script src="js/elasticui.min.js"></script>
--->
+	<link rel="shortcut icon" href="img/prefixcommons.ico" type="image/x-icon" />
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
     <script src="http://code.angularjs.org/1.2.16/angular.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elasticsearch.angular.js"></script>
@@ -17,52 +10,55 @@
     <script src="http://rawgit.com/YousefED/ElasticUI/master/dist/elasticui.min.js"></script>
 	
 	<style>
-        .sidebar {
-            position: fixed;
-            top: 0px;
-            bottom: 0px;
-			left: 20px;
-            z-index: 1000;
-            display: block;
-            padding: 20px;
-            overflow-x: hidden;
-            overflow-y: auto;
-            /* background-color: #f5f5f5; */
-            border-right: 0px solid #eee;
-        }
-		.bannerinput {
-			width: 300px;
-		}
-		.details {
-			max-height: 100px;
-			transition: .8s;
-			overflow: hidden;
-		}
+	.sidebar {
+		position: fixed;
+		top: 0px;
+		bottom: 0px;
+		left: 20px;
+		z-index: 1000;
+		display: block;
+		padding: 20px;
+		overflow-x: hidden;
+		overflow-y: auto;
+		/* background-color: #f5f5f5; */
+		border-right: 0px solid #eee;
+	}
+	.bannerinput {
+		width: 300px;
+	}
+	.details {
+		max-height: 100px;
+		transition: .8s;
+		overflow: hidden;
+	}
     </style>
 	<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-73896785-1', 'auto');
-  ga('send', 'pageview');
+	ga('create', 'UA-73896785-1', 'auto');
+	ga('send', 'pageview');
 	</script>
 
     <script>
-        angular
-            .module('prefixcommons', ['elasticui'])
-            .constant('euiHost', 'http://search.prefixcommons.org')
-			.controller('q', ['$scope', '$location', function ($scope, $location) {
-				$scope.querystring = $location.search().q;
-			 }])			 
-			.controller('search', ['$scope', function($scope) {
-
-			}]);
-  </script>
-	
+	angular
+	.module('prefixcommons', ['elasticui'])
+	.constant('euiHost', 'http://search.prefixcommons.org')
+	.controller('q', ['$scope', '$location', function ($scope, $location) {
+		// load querystring from url
+		$scope.querystring = $location.search().q;
+		// update url when querystring changes
+		$scope.updateHash = function(myE) {
+			$location.search('q', $scope.querystring);
+		}
+	 }])			 
+	.controller('search', ['$scope', function($scope) {}]);
+	</script>
 </head>
-<body ng-app="prefixcommons" eui-index="'prefixcommons'" ng-controller="main">
+
+<body ng-app="prefixcommons" eui-index="'prefixcommons'">
 
     <div class="container-fluid" ng-controller="search">
         <div class="row">
@@ -80,7 +76,7 @@
 					<h1><img height="40" src="img/prefixcommons.png"/>prefixcommons</h1>
 					<br>
 					<span style="">
-						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all^1']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" ng-controller="q" type="text" placeholder="enter search terms">
+						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all^1']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" ng-controller="q" type="text" placeholder="enter search terms" ng-change="updateHash($event)">
 					</span>
 				</div>
 				<div> 
