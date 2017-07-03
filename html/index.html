@@ -4,7 +4,8 @@
     <title>prefixcommons.org</title>
 	<link rel="shortcut icon" href="img/prefixcommons.ico" type="image/x-icon" />
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-    <script src="http://code.angularjs.org/1.2.16/angular.js"></script>
+    <script src="http://code.angularjs.org/1.2.16/angular.min.js"></script>
+	<script src="http://code.angularjs.org/1.2.16/angular-route.min.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elasticsearch.angular.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elastic.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/dist/elasticui.min.js"></script>
@@ -44,17 +45,19 @@
 
     <script>
 	angular
-	.module('prefixcommons', ['elasticui'])
-	.constant('euiHost', 'http://search.prefixcommons.org')
+	.module('prefixcommons', ['elasticui', 'ngRoute'])
+	.constant('euiHost', 'http://localhost:9200')
+	.config(['$locationProvider', function($locationProvider) {
+		$locationProvider.html5Mode(true);
+	}])
+	.controller('search', ['$scope', '$location', function($scope, $location) {}])
 	.controller('q', ['$scope', '$location', function ($scope, $location) {
-		// load querystring from url
 		$scope.querystring = $location.search().q;
-		// update url when querystring changes
-		$scope.updateHash = function(myE) {
+		
+		$scope.updateUrl = function(myEvent) {
 			$location.search('q', $scope.querystring);
 		}
-	 }])			 
-	.controller('search', ['$scope', function($scope) {}]);
+	 }]);
 	</script>
 </head>
 
@@ -76,7 +79,7 @@
 					<h1><img height="40" src="img/prefixcommons.png"/>prefixcommons</h1>
 					<br>
 					<span style="">
-						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all^1']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" ng-controller="q" type="text" placeholder="enter search terms" ng-change="updateHash($event)">
+						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="querystring.startsWith('id:') ? ejs.MatchQuery('preferredPrefix', querystring.substring(3)) : ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all^1']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" ng-controller="q" type="text" placeholder="enter search terms" ng-change="updateUrl($event)">
 					</span>
 				</div>
 				<div> 
@@ -87,10 +90,10 @@
 							{{i+1}}.
 						</td>
 						<td style="{{$odd ? 'background-color:#f1f1f1; vertical-align: text-top;' : 'vertical-align: text-top;'}}">
-						 <div style="font-weight: bold;">{{doc._source.title}} [prefix: {{doc._source.preferredPrefix}}]</div>
+						 <div style="font-weight: bold;">{{doc._source.title}} [prefix: {{doc._source.preferredPrefix}}] <a ng-href="?q=id:{{doc._source.preferredPrefix}}" target="_self"><img height="12" src="img/permalink-gray.png"/></a></div>
 						    <div>{{doc._source.description}}</div>
 						   
-						   	<div><a href='#{{i}}' ng-click='showDetails =! showDetails'>details</a></div>
+						   	<div><a ng-click='showDetails =! showDetails'>details</a></div>
 							<div ng-show="showDetails">
 								<br>
 								<span ng-if="doc._source.organization != ''  && doc._source.organization.length > 0">
