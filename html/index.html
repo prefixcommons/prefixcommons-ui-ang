@@ -9,7 +9,7 @@
     <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elasticsearch.angular.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/examples/demo/lib/elastic.js"></script>
     <script src="http://rawgit.com/YousefED/ElasticUI/master/dist/elasticui.min.js"></script>
-	
+
 	<style>
 	.sidebar {
 		position: fixed;
@@ -72,7 +72,7 @@
                 <h3>Keywords</h3>
                 <eui-singleselect field="'keywords'" size="8"></eui-singleselect>
                 <h3>organization</h3>
-                <eui-singleselect field="'organization'" size="8"></eui-singleselect>                
+                <eui-singleselect field="'organization'" size="8"></eui-singleselect>
             </div>
             <div class="col-xs-8 col-xs-offset-3">
                 <div style="left: 10px; height: 200px; text-align: center;  padding-top: 30px;">
@@ -82,7 +82,7 @@
 						<input class="ng-scope ng-pristine ng-valid bannerinput" eui-query="querystring.startsWith('id:') ? ejs.MatchQuery('preferredPrefix', querystring.substring(3)) : ejs.MultiMatchQuery(['preferredPrefix^4', 'alternatePrefix^3', 'title^2', '_all^1']).query(querystring).operator('AND').lenient(false).boost('1.0')" ng-model="querystring" eui-enabled="querystring.length" ng-controller="q" type="text" placeholder="enter search terms" ng-change="updateUrl($event)">
 					</span>
 				</div>
-				<div> 
+				<div>
 					<span><strong>{{indexVM.results.hits.total}}</strong> {{indexVM.results.hits.total == 1 ? 'result':'results'}}</span>
 					<table>
 					  <tr style="border-spacing:5em" ng-repeat="(i,doc) in indexVM.results.hits.hits">
@@ -92,9 +92,9 @@
 						<td style="{{$odd ? 'background-color:#f1f1f1; vertical-align: text-top;' : 'vertical-align: text-top;'}}">
 						 <div style="font-weight: bold;">{{doc._source.title}} [prefix: {{doc._source.preferredPrefix}}] <a ng-href="?q=id:{{doc._source.preferredPrefix}}" target="_self"><img height="12" src="img/permalink-gray.png"/></a></div>
 						    <div>{{doc._source.description}}</div>
-						   
-						   	<div><a ng-click='showDetails =! showDetails'>details</a></div>
-							<div ng-show="showDetails">
+
+						   	<div ng-if="indexVM.results.hits.total!=1"><a ng-click='showDetails =! showDetails'>details</a></div>
+							<div ng-show="showDetails || indexVM.results.hits.total==1">
 								<br>
 								<span ng-if="doc._source.organization != ''  && doc._source.organization.length > 0">
 									<strong>organization:</strong> {{doc._source.organization}}
@@ -112,79 +112,79 @@
 									<br>
 								</span>
 								<span ng-if="doc._source.pubmed != '' && doc._source.pubmed.length > 0">
-									<strong>pubmed:</strong> 
+									<strong>pubmed:</strong>
 									<span ng-repeat="pubmed in doc._source.pubmed">
 										<a href="http://www.ncbi.nlm.nih.gov/pubmed/{{pubmed}}">{{pubmed}}</a>{{$last ? '' : ', '}}
 									</span>
 									<br>
 								</span>
-								
+
 								<span ng-if="doc._source.alternativePrefix != '' && doc._source.alternativePrefix.length > 0">
-									<strong>alternative prefixes:</strong> 
+									<strong>alternative prefixes:</strong>
 									<span ng-repeat="alternativePrefix in doc._source.alternativePrefix">
 										{{alternativePrefix}}{{$last ? '' : ', '}}
 									</span>
 									<br>
 								</span>
-								<span ng-if="doc._source.preferredBaseURI != '' && doc._source.preferredBaseURI.length > 0">	  
+								<span ng-if="doc._source.preferredBaseURI != '' && doc._source.preferredBaseURI.length > 0">
 									<strong>preferred base URI:</strong> {{doc._source.preferredBaseURI}}
 									<br>
 								</span>
 								<span ng-if="doc._source.alternativeBaseURI != '' && doc._source.alternativeBaseURI.length > 0">
-									<strong>alternative base URI:</strong> 
+									<strong>alternative base URI:</strong>
 									<span ng-repeat="alternativeBaseURI in doc._source.alternativeBaseURI">
 										{{alternativeBaseURI}}{{$last ? '' : ', '}}
 									</span>
 									<br>
-								</span>								
+								</span>
 								<span ng-if="doc._source.idRegex != '' && doc._source.idRegex.length > 0">
 									<strong>idRegex:</strong> {{doc._source.idRegex}}
 									<br>
-								</span>   
+								</span>
 								<span ng-if="doc._source.exampleID != '' && doc._source.exampleID.length > 0">
 									<strong>exampleID:</strong> {{doc._source.exampleID}}
 									<br>
-								</span>  
-								<span ng-if="doc._source.providerHtmlTemplate != '' 
+								</span>
+								<span ng-if="doc._source.providerHtmlTemplate != ''
 										&& doc._source.providerHtmlTemplate != 'N/A'
-										&& doc._source.providerHtmlTemplate.length > 0">	
+										&& doc._source.providerHtmlTemplate.length > 0">
 									<strong>providerHtmlTemplate:</strong> {{doc._source.providerHtmlTemplate}}
 									<br/>
 								</span>
 
 
-								<span ng-if="doc._source.exampleID != '' && doc._source.exampleID.length > 0 
-										&& doc._source.providerHtmlTemplate != '' 
+								<span ng-if="doc._source.exampleID != '' && doc._source.exampleID.length > 0
+										&& doc._source.providerHtmlTemplate != ''
 										&& doc._source.providerHtmlTemplate != 'N/A'
 										&& doc._source.providerHtmlTemplate.length > 0
-								">	
-									<strong>Provider Example HTML:</strong> 
+								">
+									<strong>Provider Example HTML:</strong>
 									<a ng-href="{{doc._source.providerHtmlTemplate.replace('$id',doc._source.exampleID)}}">html</a>
 									<br/>
 								</span>
-								<span ng-if="doc._source.exampleID != '' && doc._source.exampleID.length > 0 ">	
+								<span ng-if="doc._source.exampleID != '' && doc._source.exampleID.length > 0 ">
 									<strong>Bio2RDF:</strong> <a href="http://bio2rdf.org/{{doc._source.preferredPrefix}}:{{doc._source.exampleID}}">http://bio2rdf.org/{{doc._source.preferredPrefix}}:{{doc._source.exampleID}}</a>
 									<br/>
 								</span>
-								<span ng-if="doc._source.miriam != '' && doc._source.miriam.length > 0 ">	
+								<span ng-if="doc._source.miriam != '' && doc._source.miriam.length > 0 ">
 									<strong>MIRIAM:</strong> <a href="http://www.ebi.ac.uk/miriam/main/collections/{{doc._source.miriam}}">http://www.ebi.ac.uk/miriam/main/collections/{{doc._source.miriam}}</a>
 									<br/>
 								</span>
-								<span ng-if="doc._source.biosharing != '' && doc._source.biosharing.length > 0 ">	
+								<span ng-if="doc._source.biosharing != '' && doc._source.biosharing.length > 0 ">
 									<strong>BioSharing:</strong> <a href="https://biosharing.org/{{doc._source.biosharing}}">https://biosharing.org/{{doc._source.biosharing}}</a>
 									<br/>
-								</span>								
-								<span ng-if="doc._source.bioportal != '' && doc._source.bioportal.length > 0 ">	
+								</span>
+								<span ng-if="doc._source.bioportal != '' && doc._source.bioportal.length > 0 ">
 									<strong>Bioportal:</strong> <a href="https://bioportal.bioontology.org/{{doc._source.bioportal}}">https://bioportal.bioontology.org/{{doc._source.bioportal}}</a>
 									<br/>
-								</span>	
+								</span>
 								<br/>
 							</div>
 						</td>
 					  </tr>
 					</table>
 					<eui-simple-paging></eui-simple-paging>
-					<div style="margin: auto;">results per page 
+					<div style="margin: auto;">results per page
 						<select ng-model="indexVM.pageSize">
 							<option ng-repeat="item in [10, 20, 50, 100]">{{item}}</option>
 						</select>
@@ -192,7 +192,7 @@
 				</div>
             </div>
 			<div class="col-xs-1"></div>
-			
+
         </div>
     </div>
 </body>
