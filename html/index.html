@@ -53,7 +53,7 @@
 	.controller('search', ['$scope', '$location', function($scope, $location) {}])
 	.controller('q', ['$scope', '$location', function ($scope, $location) {
 		$scope.querystring = $location.search().q;
-		
+
 		$scope.updateUrl = function(myEvent) {
 			$location.search('q', $scope.querystring);
 		}
@@ -93,8 +93,8 @@
 						 <div style="font-weight: bold;">{{doc._source.title}} [prefix: {{doc._source.preferredPrefix}}] <a ng-href="?q=id:{{doc._source.preferredPrefix}}" target="_self"><img height="12" src="img/permalink-gray.png"/></a></div>
 						    <div>{{doc._source.description}}</div>
 
-						   	<div ng-if="indexVM.results.hits.total!=1"><a ng-click='showDetails =! showDetails'>details</a></div>
-							<div ng-show="showDetails || indexVM.results.hits.total==1">
+						   	<div ng-show="indexVM.results.hits.total!=1"><a ng-click='showDetails = !showDetails'>details</a></div>
+							<div ng-show="showDetails || (indexVM.results.hits.total==1)">
 								<br>
 								<span ng-if="doc._source.organization != ''  && doc._source.organization.length > 0">
 									<strong>organization:</strong> {{doc._source.organization}}
