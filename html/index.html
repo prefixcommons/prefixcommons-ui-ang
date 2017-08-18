@@ -44,12 +44,15 @@
 	</script>
 
     <script>
-	angular
-	.module('prefixcommons', ['elasticui', 'ngRoute'])
-	.constant('euiHost', 'http://localhost:9200')
-	.config(['$locationProvider', function($locationProvider) {
-		$locationProvider.html5Mode(true);
-	}])
+        var host = window.location.href;
+        host = host.split('/')[0] + '//' + host.split('/')[2] + ':9200';
+
+        angular
+        .module('prefixcommons', ['elasticui', 'ngRoute'])
+        .constant('euiHost', host)
+        .config(['$locationProvider', function($locationProvider) {
+                $locationProvider.html5Mode(true);
+        }])
 	.controller('search', ['$scope', '$location', function($scope, $location) {}])
 	.controller('q', ['$scope', '$location', function ($scope, $location) {
 		$scope.querystring = $location.search().q;
