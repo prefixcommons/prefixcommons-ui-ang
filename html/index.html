@@ -45,7 +45,7 @@
 
     <script>
         var host = window.location.href;
-        host = host.split('/')[0] + '//' + host.split('/')[2] + ':9200';
+        host = host.split('/')[0] + '//elastic.' + host.split('/')[2];
 
         angular
         .module('prefixcommons', ['elasticui', 'ngRoute'])
